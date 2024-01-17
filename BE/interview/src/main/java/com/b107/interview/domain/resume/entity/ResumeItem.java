@@ -21,7 +21,7 @@ public class ResumeItem {
     @Column(length = 1500, nullable = false)
     private String resumeAnswer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id")
     private Resume resume;
 }

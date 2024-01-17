@@ -12,6 +12,6 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     @Query(value = "select r from Resume r where r.user.userId = :userId and r.companyName like concat('%', coalesce(:keyword, ''), '%')")
     Page<Resume> findAllByUserIdAndCompanyName(Pageable pageable, Long userId, String keyword);
 
-    @Query(value = "select r from Resume r where r.user.userId = :userId order by r.resumeId desc ")
+    @Query(value = "select distinct r from Resume r left join fetch r.reviews where r.user.userId = :userId order by r.resumeId desc ")
     List<Resume> findAllByUserId(Long userId);
 }

@@ -4,6 +4,7 @@ import com.b107.interview.domain.resume.entity.Resume;
 import com.b107.interview.domain.resume.entity.ResumeItem;
 import com.b107.interview.domain.resume.repository.ResumeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ResumeService {
     private final ResumeRepository resumeRepository;
 
     //자기소개서 작성
+    @Transactional
     public Resume createResume(Resume resume) {
         List<ResumeItem> resumeItems = new ArrayList<>(resume.getResumeItems());
         resume.getResumeItems().clear();
@@ -36,6 +38,7 @@ public class ResumeService {
     }
 
     //자기소개서 수정
+    @Transactional
     public Resume updateResume(Resume resume, Long resumeId) {
         Resume foundResume = readResume(resumeId, resume.getUser().getUserId());
 
@@ -55,6 +58,7 @@ public class ResumeService {
     }
 
     //자기소개서 조회
+    @Transactional(readOnly = true)
     public Resume readResume(Long resumeId, Long userId) {
         Optional<Resume> optionalResume = resumeRepository.findById(resumeId);
         if (optionalResume.isEmpty()) {
@@ -71,12 +75,14 @@ public class ResumeService {
     }
 
     //자기소개서 전체 조회
+    @Transactional(readOnly = true)
     public Object readResumes(Pageable pageable, Long userId, String keyword, boolean isAll) {
         if (isAll) return resumeRepository.findAllByUserId(userId); //페이지네이션 미적용
         else return resumeRepository.findAllByUserIdAndCompanyName(pageable, userId, keyword);
     }
 
     //자기소개서 삭제
+    @Transactional
     public void deleteResume(Long resumeId, Long userId) {
         Resume foundResume = readResume(resumeId, userId);
         resumeRepository.delete(foundResume);
