@@ -8,6 +8,7 @@ import com.b107.interview.domain.resume.mapper.ResumeMapper;
 import com.b107.interview.domain.resume.service.ResumeService;
 import com.b107.interview.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/resume")
 @RequiredArgsConstructor
+@Slf4j
 public class ResumeController {
     private final ResumeService resumeService;
     private final ResumeMapper resumeMapper;

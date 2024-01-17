@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -21,6 +20,7 @@ public class ReviewService {
     private final ResumeService resumeService;
 
     //면접 후기 작성
+    @Transactional
     public Review createReview(Review review) {
         Resume foundResume = resumeService.readResume(review.getResume().getResumeId(), review.getUser().getUserId());
         review.setResume(foundResume);
@@ -28,6 +28,7 @@ public class ReviewService {
     }
 
     //면접 후기 수정
+    @Transactional
     public Review updateReview(Review review, Long reviewId) {
         Review foundReview = readReview(reviewId, review.getUser().getUserId());
 
@@ -41,8 +42,9 @@ public class ReviewService {
     }
 
     //면접 후기 조회
+    @Transactional(readOnly = true)
     public Review readReview(Long reviewId, Long userId) {
-        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+        Optional<Review> optionalReview = reviewRepository.findByIdJoinFetch(reviewId);
         if (optionalReview.isEmpty()) {
             throw new RuntimeException("존재하지 않는 면접 후기입니다.");
         }
@@ -57,6 +59,7 @@ public class ReviewService {
     }
 
     //면접 후기 페이지 조회
+    @Transactional(readOnly = true)
     public Page<Review> readReviews(Pageable pageable, Long userId, String keyword) {
         return reviewRepository.findAllByUserIdAndCompanyName(pageable, userId, keyword);
     }
